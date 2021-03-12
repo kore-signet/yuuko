@@ -11,6 +11,7 @@ import aiohttp
 import pprint
 import asyncio
 import typing
+import discord
 
 class SalmonCog(commands.Cog):
     def __init__(self,config):
@@ -25,7 +26,8 @@ class SalmonCog(commands.Cog):
             return
 
         if name.lower() == "steve" or name.lower() == "salmon steve":
-            await ctx.send("steve!")
+            with open("yuuko/steve.png",'rb') as f:
+                await ctx.send("steve!",file=discord.File(f,'steve.png'))
             return
 
         res = f"alright! running {self.config['salmon']['total_sims']} possible salmon cases..."
