@@ -24,6 +24,10 @@ class SalmonCog(commands.Cog):
             await ctx.send("please specify a name ):")
             return
 
+        if name.lower() == "steve" or name.lower() == "salmon steve":
+            await ctx.send("steve!")
+            return
+
         res = f"alright! running {self.config['salmon']['total_sims']} possible salmon cases..."
         m = await ctx.send(res)
 

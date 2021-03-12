@@ -4,3 +4,4 @@ aiohttp
 aiosqlite
 numpy
 requests
+toml
