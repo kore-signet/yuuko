@@ -1,0 +1,6 @@
+salmon_lib
+discord
+aiohttp
+aiosqlite
+numpy
+requests
