@@ -3,5 +3,4 @@ discord
 aiohttp
 aiosqlite
 numpy
-requests
 toml

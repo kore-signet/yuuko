@@ -1,19 +1,9 @@
-import pprint
 from salmon_lib import *
-import numpy as np
-import json
-import math
-import requests
-import aiosqlite
 from discord.ext import commands
-import asyncio
-import aiohttp
-import pprint
-import asyncio
-import typing
-import discord
-import random
-
+from datetime import datetime, timezone
+import numpy as np
+import json, math, random, typing, lzma, asyncio 
+import aiosqlite, aiohttp, discord
 
 class SalmonCog(commands.Cog):
     def __init__(self, config):
@@ -62,26 +52,34 @@ class SalmonCog(commands.Cog):
     async def close_db(self):
         await self.db.close()
 
+    async def archive_result(self,player,results):
+        results_compressed = lzma.compress(results.encode("utf-8"),preset=lzma.PRESET_EXTREME)
+        time = int(datetime.now(tz=timezone.utc).timestamp())
+        await self.db.execute(
+            "INSERT INTO result_archive (player,result,timestamp) VALUES (?,?,?)",
+            [player['name'],results_compressed,time]
+        )
+        await self.db.commit()
+
     async def load_player(self, name):
         cursor = await self.db.execute(
             "SELECT * FROM  player_cache WHERE name = ?", [name]
         )
         player = await cursor.fetchone()
-
         if player:
             return json.loads(player["stlats"])
         else:
-            r = requests.get(
-                "https://onomancer.sibr.dev/api/getOrGenerateStats",
-                params={"name": name},
-            )
-            player_json = r.text
-            await self.db.execute(
-                "INSERT INTO player_cache (name,stlats) VALUES (?,?)",
-                [name, player_json],
-            )
-            await self.db.commit()
-            return json.loads(player_json)
+            async with aiohttp.ClientSession() as session:
+                async with session.get("https://onomancer.sibr.dev/api/getOrGenerateStats",params={"name": name}) as response:
+                    player_json = await response.json()
+                    player_json['name'] = name
+                    await self.db.execute(
+                        "INSERT INTO player_cache (name,stlats) VALUES (?,?)",
+                        [name, json.dumps(player_json)],
+                    )
+                    await self.db.commit()
+                    print(player_json)
+                    return player_json
 
     async def run_sim(self, player, session):
         rng = np.random.default_rng()
@@ -176,7 +174,13 @@ class SalmonCog(commands.Cog):
             data=payload,
             headers={"content-type": "application/json"},
         ) as resp:
-            results = await resp.json()
+            results_s = await resp.text()
+
+            if self.config["db"]["archive_results"]:
+                await self.archive_result(player,results_s)
+
+            results = json.loads(results_s)
+
             abds = np.array([int(r) for y, r in results["abundances"]["Fishy T"]])
             diff = abds[1:] - abds[:-1]
             changes = diff / abds[1:] * 100

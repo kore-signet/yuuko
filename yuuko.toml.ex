@@ -13,6 +13,7 @@ successful_messages = [
 [db]
 setup_sql = "db/setup.sql" # Database creation SQL
 path = "db/yuuko.db"
+archive_results = false # whether to archive full CRiSP results for players or not
 
 [salmon]
 total_sims = 20 # total simulation cases to run on command
