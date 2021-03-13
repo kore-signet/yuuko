@@ -50,7 +50,10 @@ class SalmonCog(commands.Cog):
         await m.edit(content=res)
 
     async def load_db(self):
-        self.db = await aiosqlite.connect(self.config["miku"]["cache_path"])
+        config = self.config["db"]
+        self.db = await aiosqlite.connect(config["path"])
+        with open(config["setup_sql"]) as sql_file:
+            await self.db.executescript(sql_file.read())
         self.db.row_factory = aiosqlite.Row
 
     async def close_db(self):
