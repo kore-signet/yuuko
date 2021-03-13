@@ -2,7 +2,7 @@ from salmon_lib import *
 from discord.ext import commands
 from datetime import datetime, timezone
 import numpy as np
-import json, math, random, typing, lzma, asyncio 
+import json, math, random, typing, lzma, asyncio
 import aiosqlite, aiohttp, discord
 
 class SalmonCog(commands.Cog):
@@ -37,8 +37,8 @@ class SalmonCog(commands.Cog):
         elif year_by_year < 0:
             res += f"the average year-by-year decrease in salmon stocks run by **{name}** was __{year_by_year:.2f}%__"
         else:
+            res += f"the average year-by-year _increase_ in salmon stocks run by **{name}** was __{year_by_year:.2f}%__" + "\n"
             res += random.choice(self.config["miku"]["successful_messages"]).format(name=name) + "\n"
-            res += f"the average year-by-year _increase_ in salmon stocks run by **{name}** was __{year_by_year:.2f}%__"
 
         await m.edit(content=res)
 
