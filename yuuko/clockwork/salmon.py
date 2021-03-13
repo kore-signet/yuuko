@@ -2,8 +2,8 @@ from salmon_lib import *
 from discord.ext import commands
 from datetime import datetime, timezone
 import numpy as np
-import json, math, random, typing, lzma
-import aiosqlite, asyncio, aiohttp, discord
+import json, math, random, typing, lzma, asyncio 
+import aiosqlite, aiohttp, discord
 
 class SalmonCog(commands.Cog):
     def __init__(self, config):
