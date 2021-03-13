@@ -12,6 +12,7 @@ import pprint
 import asyncio
 import typing
 import discord
+import random
 
 class SalmonCog(commands.Cog):
     def __init__(self,config):
@@ -39,7 +40,8 @@ class SalmonCog(commands.Cog):
         res += '\n' + ('-' * len(res)) + '\n'
         res += f"in __{results['extinction_percent']:.2f}%__ of cases, **{name}** caused an extinction of all salmon" + '\n'
         if results['extinction_percent'] == 100:
-            res += "congratz, your fave is an environmental criminal"
+            print(self.config['miku']['extinction_messages'])
+            res += random.choice(self.config['miku']['extinction_messages'])
         else:
             res += f"the average year-by-year decrease in salmon stocks run by **{name}** was __{results['year-by-year']:.2f}%__"
 
