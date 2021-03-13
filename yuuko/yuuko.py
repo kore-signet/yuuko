@@ -10,16 +10,18 @@ config = {}
 with open("yuuko.toml") as f:
     config = toml.load(f)
 
-bot = commands.Bot(command_prefix=config['miku'].get('prefix','$'))
+bot = commands.Bot(command_prefix=config["miku"].get("prefix", "$"))
 bot.config = config
 bot.remove_command("help")
 
-@bot.listen('on_ready')
+
+@bot.listen("on_ready")
 async def load_dbs():
-    await bot.get_cog('SalmonCog').load_db()
+    await bot.get_cog("SalmonCog").load_db()
+
 
 @bot.command()
-async def help(ctx,*,command: typing.Optional[str]):
+async def help(ctx, *, command: typing.Optional[str]):
     h = f"""
 🐟 |        **{ctx.prefix}fish** [player name]
 
@@ -31,10 +33,9 @@ async def help(ctx,*,command: typing.Optional[str]):
     *by allie ([cat-girl.gay](https://cat-girl.gay) | sapphicfettucine#6248)*
     """
 
-
-    embed=discord.Embed(title="**salmon help**", description=h+about)
+    embed = discord.Embed(title="**salmon help**", description=h + about)
     await ctx.send(embed=embed)
 
 
-bot.load_extension('clockwork.salmon')
-bot.run(config['miku']['token'])
+bot.load_extension("clockwork.salmon")
+bot.run(config["miku"]["token"])
