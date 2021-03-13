@@ -26,9 +26,8 @@ class SalmonCog(commands.Cog):
             await ctx.send("please specify a name ):")
             return
 
-        if name.lower() == "steve" or name.lower() == "salmon steve":
-            with open("yuuko/steve.png", "rb") as f:
-                await ctx.send("steve!", file=discord.File(f, "steve.png"))
+        if name.lower() in ["steve", "steve!", "salmon steve"]:
+            await ctx.send("steve!", file=discord.File("yuuko/steve.png"))
             return
 
         res = f"alright! running {self.config['salmon']['total_sims']} possible salmon cases..."
@@ -36,6 +35,7 @@ class SalmonCog(commands.Cog):
 
         player = await self.load_player(name)
         results = await self.run_n_sims(player, self.config["salmon"]["total_sims"])
+        year_by_year = results["year-by-year"]
 
         res += "\n" + ("-" * len(res)) + "\n"
         res += (
@@ -43,9 +43,12 @@ class SalmonCog(commands.Cog):
             + "\n"
         )
         if results["extinction_percent"] == 100:
-            res += random.choice(self.config["miku"]["extinction_messages"])
+            res += random.choice(self.config["miku"]["extinction_messages"]).format(name=name)
+        elif year_by_year < 0:
+            res += f"the average year-by-year decrease in salmon stocks run by **{name}** was __{year_by_year:.2f}%__"
         else:
-            res += f"the average year-by-year decrease in salmon stocks run by **{name}** was __{results['year-by-year']:.2f}%__"
+            res += random.choice(self.config["miku"]["successful_messages"]).format(name=name) + "\n"
+            res += f"the average year-by-year _increase_ in salmon stocks run by **{name}** was __{year_by_year:.2f}%__"
 
         await m.edit(content=res)
 
