@@ -4,7 +4,10 @@ prefix = "salmon!" # discord command prefix
 extinction_messages = [
   "congratz, your fave is an environmental criminal",
   "salmon is now Unstable!",
-  "which means they're about as good Jessica Telephone at this",
+  "which means they're about as good as Jessica Telephone at this",
+]
+successful_messages = [
+  "**HEY!** turns out, **{name}** isn't half bad at this salmon thing?",
 ]
 
 [db]
