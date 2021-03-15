@@ -4,19 +4,10 @@ import toml, discord
 
 logging.basicConfig(level=logging.DEBUG)
 
-class Yuuko(commands.Bot):
-    def __init__(self,**kwargs):
-        with open("yuuko.toml") as f:
-            self.config = toml.load(f)
-
-        super().__init__(command_prefix=self.config["miku"].get("prefix", "$"))
-        self.remove_command("help")
-
-        self.load_extension("clockwork.salmon")
-
-    async def on_ready(self):
-        await self.get_cog('SalmonCog').load_db()
-
+# [coin voice] HelpCog is a mess
+# this should be an implementation of HelpCommand, not a cog,
+# but this is a rush fix!
+class HelpCog(commands.Cog):
     @commands.command()
     async def help(self,ctx, *, command: typing.Optional[str]):
         h = f"""
@@ -32,6 +23,18 @@ class Yuuko(commands.Bot):
 
         embed = discord.Embed(title="**salmon help**", description=h + about)
         await ctx.send(embed=embed)
+
+class Yuuko(commands.Bot):
+    def __init__(self,**kwargs):
+        with open("yuuko.toml") as f:
+            self.config = toml.load(f)
+
+        super().__init__(command_prefix=self.config["miku"].get("prefix", "$"),help_command=None)
+        self.load_extension('clockwork.salmon')
+        self.add_cog(HelpCog())
+
+    async def on_ready(self):
+        await self.get_cog('SalmonCog').load_db()
 
     async def close(self):
         await self.get_cog('SalmonCog').close_db()
