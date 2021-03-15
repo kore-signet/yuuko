@@ -36,6 +36,8 @@ class SalmonCog(commands.Cog):
             res += random.choice(self.config["miku"]["extinction_messages"]).format(name=name)
         elif year_by_year < 0:
             res += f"the average year-by-year decrease in salmon stocks run by **{name}** was __{year_by_year:.2f}%__"
+        elif math.isnan(year_by_year):
+            res += f"i couldn't calculate the average year-by-year decrease in salmon stocks run by **{name}**. this is a cryptic and worrying situation."
         else:
             res += f"the average year-by-year _increase_ in salmon stocks run by **{name}** was __{year_by_year:.2f}%__" + "\n"
             res += random.choice(self.config["miku"]["successful_messages"]).format(name=name) + "\n"
