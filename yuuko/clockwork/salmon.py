@@ -6,8 +6,9 @@ import json, math, random, typing, lzma, asyncio
 import aiosqlite, aiohttp, discord
 
 class SalmonCog(commands.Cog):
-    def __init__(self, config):
+    def __init__(self, config,loop):
         self.config = config
+        self.loop = loop
         self.db = None
 
     @commands.command()
@@ -46,7 +47,7 @@ class SalmonCog(commands.Cog):
 
     async def load_db(self):
         config = self.config["db"]
-        self.db = await aiosqlite.connect(config["path"])
+        self.db = await aiosqlite.connect(config["path"],loop=self.loop)
         with open(config["setup_sql"]) as sql_file:
             await self.db.executescript(sql_file.read())
         self.db.row_factory = aiosqlite.Row
@@ -228,7 +229,7 @@ class SalmonCog(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(SalmonCog(bot.config))
+    bot.add_cog(SalmonCog(bot.config,bot.loop))
 
 
 def teardown(bot):
