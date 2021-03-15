@@ -1,11 +1,6 @@
 from discord.ext import commands
-import logging
-import toml
-import typing
-import discord
-import functools
-import asyncio
-import signal
+import logging, typing
+import toml, discord
 
 logging.basicConfig(level=logging.DEBUG)
 
